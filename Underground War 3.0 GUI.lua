@@ -79,19 +79,11 @@ local info = infoTab:NewSection("Script Information")
 local weapons = weaponsTab:NewSection("Weapons Options")
 local map = mapTab:NewSection("Map Settings")
 local teleports = teleportsTab:NewSection("Avalible Teleports")
-local playerSection = playerTab:NewSection("Player Options")
+local player = playerTab:NewSection("Player Options")
 local other = otherTab:NewSection("Other Things")
 local settings = settingsTab:NewSection("Script Settings")
-local player = game.Players.LocalPlayer
-local character = player.Character
-local humanoid = character.Humanoid
 local loopCaptureTeam = ""
 local loopCapture = false
-
--- Load in required external scripts
-
-loadstring(game:HttpGet('https://raw.githubusercontent.com/lilmond/roblox_fly_script/refs/heads/main/v3.lua'))() -- Fly script
-loadstring(game:HttpGet('https://pastebin.com/raw/4JrUuEqn'))() -- Freecam script
 
 -- Local functions
 
@@ -108,7 +100,7 @@ local function ReturnState(state) -- Returns a user friendly interpritation of a
 end
 
 local function Teleport(position) -- Teleports a player to a Vector3 position
-    character:MoveTo(position)
+    game.Players.LocalPlayer.Character:MoveTo(position)
 end
 
 -- Load info section
@@ -121,22 +113,23 @@ info:NewLabel("Have fun!")
 -- Load weapons section
 
 weapons:NewButton("Get Rocket Launcher", "Gives you the rocket launcher", function()
-    player:SetAttribute("DONE", true)
-    Notify("You can now use the rocket launcher even if the timer is still there!")
+    game.Players.LocalPlayer:SetAttribute("DONE", true)
+    game.Players.LocalPlayer.PlayerGui.MainGui.MainInventoryFrame.InventoryHolder.RocketLauncher.ToolName:Destroy()
+    Notify("You can now use the rocket launcher!")
 end)
 
 weapons:NewButton("Upgrade Gun", "Upgrades your gun to max level", function()
-    player.UpgradeValues.SniperReloadingSpeed.Value = 5000
+    game.Players.LocalPlayer.UpgradeValues.SniperReloadingSpeed.Value = 5000
     Notify("Gun successfully set to max level!")
 end)
 
 weapons:NewButton("Upgrade Sword", "Upgrades your sword to max level", function()
-    player.UpgradeValues.SwordDamage.Value = 5000
+    game.Players.LocalPlayer.UpgradeValues.SwordDamage.Value = 5000
     Notify("Sword successfully set to max level!")
 end)
 
 weapons:NewButton("Upgrade Shovel", "Upgrades your shovel to max level", function()
-    player.UpgradeValues.ShovelSpeed.Value = 5000
+    game.Players.LocalPlayer.UpgradeValues.ShovelSpeed.Value = 5000
     Notify("Shovel successfully set to max level!")
 end)
 
@@ -273,46 +266,46 @@ teleports:NewButton("Blue Flag", "Teleports you to the blue team flag.", functio
 end)
 
 teleports:NewButton("Steel Red Flag", "Makes you steel the red teams flag.", function()
-    local currentPos = humanoid.RootPart.Position
+    local currentPos = game.Players.LocalPlayer.Character.Humanoid.RootPart.Position
     Teleport(game.Workspace.RedFlagStand.Stand.Position)
     task.wait(0.1)
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     task.wait(1)
     Teleport(currentPos)
     Notify("Successfully stole red teams flag!")
 end)
 
 teleports:NewButton("Steel Blue Flag", "Makes you steel the blue teams flag.", function()
-    local currentPos = humanoid.RootPart.Position
+    local currentPos = game.Players.LocalPlayer.Character.Humanoid.RootPart.Position
     Teleport(game.Workspace.BlueFlagStand.Stand.Position)
     task.wait(0.1)
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     task.wait(1)
     Teleport(currentPos)
     Notify("Successfully stole blue teams flag!")
 end)
 
 teleports:NewButton("Capture Red Flag", "Makes you capture the red teams flag.", function()
-    local currentPos = humanoid.RootPart.Position
+    local currentPos = game.Players.LocalPlayer.Character.Humanoid.RootPart.Position
     Teleport(game.Workspace.RedFlagStand.Stand.Position)
     task.wait(0.1)
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     task.wait(1)
     Teleport(game.Workspace.BlueFlagStand.Stand.Position)
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     task.wait(1)
     Teleport(currentPos)
     Notify("Successfully captured red teams flag!")
 end)
 
 teleports:NewButton("Capture Blue Flag", "Makes you capture the blue teams flag.", function()
-    local currentPos = humanoid.RootPart.Position
+    local currentPos = game.Players.LocalPlayer.Character.Humanoid.RootPart.Position
     Teleport(game.Workspace.BlueFlagStand.Stand.Position)
     task.wait(0.1)
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     task.wait(1)
     Teleport(game.Workspace.RedFlagStand.Stand.Position)
-    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     task.wait(1)
     Teleport(currentPos)
     Notify("Successfully captured blue teams flag!")
@@ -341,20 +334,32 @@ end)
 
 -- Load player section
 
-playerSection:NewSlider("Speed", "Sets your players speed.", 1000, 0, function(speed)
-    humanoid.WalkSpeed = speed 
+player:NewSlider("Speed", "Sets your players speed.", 1000, 0, function(speed)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed 
 end)
 
-playerSection:NewSlider("Jump Power", "Sets your players jump power.", 1000, 0, function(jump)
-    humanoid.JumpPower = jump
+player:NewSlider("Jump Power", "Sets your players jump power.", 1000, 0, function(jump)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = jump
 end)
 
-playerSection:NewButton("Fly", "Tells you how to fly.", function()
-    Notify("To toggle fly, press E!")
+player:NewButton("Fly", "Tells you how to fly.", function()
+    Notify("You now have flight! Press E to toggle.")
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Eli-Sterken/Roblox-Scripts/refs/heads/main/Extras/fly.lua'))()
 end)
 
-playerSection:NewButton("Freecam", "Tells you how to activate freecam.", function()
-    Notify("To toggle freecam, press Shift+P! Note that you will have forced shiftlock after this!")
+player:NewButton("Freecam", "Tells you how to activate freecam.", function()
+    Notify("You now have freecam! Press Shift+P to toggle.")
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Eli-Sterken/Roblox-Scripts/refs/heads/main/Extras/freecam.lua'))()
+end)
+
+player:NewButton("Switch To Red", "Switches you to the red team.", function()
+    game.ReplicatedStorage.remotefunctions.Team:InvokeServer('setTeam', 'TeamRed')
+    Notify("Successfully switched to red team!")
+end)
+
+player:NewButton("Switch To Blue", "Switches you to the blue team.", function()
+    game.ReplicatedStorage.remotefunctions.Team:InvokeServer('setTeam', 'TeamBlue')
+    Notify("Successfully switched to blue team!")
 end)
 
 -- Load other section
@@ -384,7 +389,7 @@ end
 
 while true do -- Loop for required tasks
     if loopCapture then 
-        local currentPos = humanoid.RootPart.Position 
+        local currentPos = game.Players.LocalPlayer.Character.Humanoid.RootPart.Position
         local opTeam = ''
 
         if loopCaptureTeam == "Red" then
@@ -395,11 +400,11 @@ while true do -- Loop for required tasks
 
         Teleport(game.Workspace[loopCaptureTeam .. 'FlagStand'].Stand.Position)
         task.wait(0.1)
-        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
         task.wait(1)
         Teleport(game.Workspace[opTeam .. "FlagStand"].Stand.Position)
         task.wait(0.1)
-        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
         task.wait(1)
         Teleport(currentPos)
         task.wait(0.1)
